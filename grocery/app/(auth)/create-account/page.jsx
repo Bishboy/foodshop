@@ -5,6 +5,9 @@ import { Input, } from "@/components/ui/input";
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import GlobalApi from '@/app/_utils/GlobalApi';
+import { useRouter } from 'next/navigation';
+import { toast } from "sonner";
+
 
 
 const CreateAccount = () => {
@@ -12,10 +15,20 @@ const CreateAccount = () => {
     const [email, SetEmail] = useState("");
     const [password, SetPassword] = useState("");
 
+    const router = useRouter()
+
     const onCreateAccount = () => {
         GlobalApi.register(username,email,password).then(resp=>{
-            console.log(resp.data.user);
-            console.log(resp.data.jwt);      
+            console.log(resp.data.user); 
+            console.log(resp.data.jwt);   
+            sessionStorage.setItem('user',JSON.stringify(resp.data.user))
+            sessionStorage.setItem('jwt',resp.data.jwt)
+            toast("Account has been Successfully Created!");
+
+            router.push('/')
+        },(e) =>{
+          toast("Error while trying to create ann account.");
+
         })
 
     }
