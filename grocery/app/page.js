@@ -10,7 +10,7 @@ export default function Home() {
   // const sliderList = await GlobalApi.getSliders()
   
   return (
-    <div className="max-w-[1550px] mx-auto p-5 md:p-10 ">
+    <div className="max-w-[1500px] mx-auto p-5  z-0 md:p-10 ">
       <Slider  /> 
       <CategoryList />
       <ProductList /> 

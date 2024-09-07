@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import {
   AlignCenterHorizontal,
+  CircleUserRound,
   LayoutGrid,
   Search,
   ShoppingBag,
@@ -19,10 +20,35 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 // import GlobalApi from "./_utils/GlobalApi";
 
 function Header() {
   const [categoryList, setCategoryList] = useState([]);
+  const [isSticky , setIsticky] = useState(false)
+  const isLoggedin = sessionStorage.getItem('jwt')? true:false
+  const router = useRouter()
+  
+    const onSignOut = () => {
+      sessionStorage.clear();
+      router.push("/sign-in");
+    };
+
+  useEffect(()=>{
+    const handleScroll = () => {
+      if(window.scrollY > 100){
+        setIsticky(true)
+      } else{
+        setIsticky(false)
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return ()=>{
+      window.removeEventListener("scroll", handleScroll);
+    }
+  })
+  
+ 
 
   // const getCategoryList= () => {
   //   GlobalApi.getCategory().then(resp => {
@@ -39,7 +65,14 @@ function Header() {
   // },[])
 
   return (
-    <div className="p-2 shadow-md flex justify-between">
+
+    <div
+      className={` p-2  px-3 fixed shadow-md  flex w-full bg-white z-50 justify-between ${
+        isSticky
+          ? "sticky top-0 left-0 right-0 border  bg-green-100 duration-300"
+          : ""
+      }`}
+    >
       <div className="flex items-center gap-8">
         <Link href="/">
           <Image
@@ -87,14 +120,35 @@ function Header() {
 
         <div className=" items-center border rounded-full p-2 gap-3 px-5 hidden md:flex">
           <Search />
-          <input type="text" placeholder="Search" className="outline-none" />
+          <input
+            type="text"
+            placeholder="Search"
+            className="outline-none bg-transparent"
+          />
         </div>
       </div>
       <div className="flex gap-5 items-center">
         <h2 className="flex gap-2 items-center text-lg">
           <ShoppingBag /> 0
         </h2>
-        <Button>Login</Button>
+        {!isLoggedin ? (
+          <Link href="/sign-in">
+            <Button>Login</Button>
+          </Link>
+        ) : (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <CircleUserRound className="w-12 h-12 bg-green-100 text-primary  rounded-full p-2 cursor-pointer " />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>My Orders</DropdownMenuItem>
+              <DropdownMenuItem onClick={()=>onSignOut()}>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
     </div>
   );

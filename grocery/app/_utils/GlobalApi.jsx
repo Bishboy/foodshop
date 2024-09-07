@@ -5,7 +5,11 @@ const axiosClient = axios.create({
   
 });
 
- const register = (username, email, password) => axiosClient.post('/auth/local/register',{username:username, email:email, password:password})
+ const register = (username, email, password) => axiosClient.post('/auth/local/register',{username:username, email:email, password:password});
+
+ const login = (email, password) => axiosClient.post('/auth/local',{
+  identifier: email, password:password
+ })
 // const getCategory = () => axiosClient.get("/categories?populate=*");
 
 // const getSliders = () => axiosClient.get('/sliders?populate=*').then(resp=>{
@@ -13,4 +17,5 @@ const axiosClient = axios.create({
 // })
 export default {
   register,
+  login
 };
