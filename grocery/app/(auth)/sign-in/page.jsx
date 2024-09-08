@@ -12,7 +12,8 @@ import { toast } from "sonner";
 const SignIn = () => {
    const [email, SetEmail] = useState("");
     const [password, SetPassword] = useState("");
-    const router = useRouter()
+    const router = useRouter();
+    const [loadind, setLoading] = useState(false)
 
     useEffect(()=>{
       const jwt = sessionStorage.getItem('jwt');
@@ -22,20 +23,22 @@ const SignIn = () => {
     },[])
 
     const onSignIn = () => {
+      setLoading(true)
       GlobalApi.login(email, password).then(resp=>{
          sessionStorage.setItem("user", JSON.stringify(resp.data.user));
          sessionStorage.setItem("jwt", resp.data.jwt);
          toast("Login successfully!");
          router.push('/')
-        
+        setLoading(false)
       },(e)=>{
         console.log(e);
-           toast("Account not found, please create an account!");
+           toast(e?.response?.data?.error?.message);
+           setLoading(false)
       })
     }
 
   return (
-    <div className="flex items-baseline justify-center -[14rem] py-[14rem] ">
+    <div className="flex items-baseline justify-center -[14rem] py-[10rem] ">
       <div className="flex flex-col items-center p-10 bg-slate-100 border-gray-200">
         <Image src="/logo.png" alt="image" width={200} height={200} />
         <h2 className="font-bold text-2xl">Sign in to Account</h2>

@@ -67,7 +67,7 @@ function Header() {
   return (
 
     <div
-      className={` p-2  px-3 fixed shadow-md  flex w-full bg-white z-50 justify-between ${
+      className={` p-2  px-3 shadow-md  flex w-full bg-white z-50 justify-between ${
         isSticky
           ? "sticky top-0 left-0 right-0 border  bg-green-100 duration-300"
           : ""

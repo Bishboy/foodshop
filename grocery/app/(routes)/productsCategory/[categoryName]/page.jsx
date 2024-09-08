@@ -12,11 +12,11 @@ async function ProductCategory({ params }) {
 
   return (
     <div>
-      <h2 className="p-4 bg-primary font-bold text-3xl text-center text-white">
+      <h2 className="p-4  bg-primary font-bold text-3xl text-center text-white">
         {params.categoryName}
       </h2>
       <TopCategoryList foodList={foodList} selectedCategory={params.categoryName} />
-      <div className="md:p-10 p-5">
+      <div className="md:p-10  p-5">
         <RealProductList productLists={productLists} />
       </div>
     </div>
