@@ -2,16 +2,52 @@
 import { Button } from "@/components/ui/button";
 import { ShoppingBasket } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import GlobalApi from "../_utils/GlobalApi";
+import { toast } from "sonner";
 
 function ProductItemDetails({ items }) {
   const [ptotalPrice, setptotalPrice] = useState(
     items.selling ? items.selling : items.cost
   );
   const [quantity, setQuantity] = useState(1);
+  const jwt = sessionStorage.getItem('jwt')
+  const user = JSON.parse(sessionStorage.getItem('user'))
+  const router = useRouter()
+
+  const addToCart = () => {
+    if(!jwt){
+      router.push('/sign-in')
+      return;
+    }
+
+    const data = {
+      data:{
+        quantity: quantity,
+        amount: (quantity * ptotalPrice).toFixed(2),
+        product: items.id,
+        users_permissions_user:user.id
+
+      }
+    };
+      console.log(data);
+      
+
+    GlobalApi.addToCart(data,jwt).then(resp=>{
+      console.log(resp);
+      toast('added to cart')
+      
+    },(e)=>{
+      toast('error while adding to cart')
+    })
+  }
 
   return (
-    <div key={items.id} className="grid grid-cols-1 md:grid-cols-2 md:p-7  p-5 bg-white ">
+    <div
+      key={items.id}
+      className="grid grid-cols-1 md:grid-cols-2 md:p-7  p-5 bg-white "
+    >
       <Image
         src={items.image}
         alt="images"
@@ -40,18 +76,28 @@ function ProductItemDetails({ items }) {
         <div className="flex flex-col items-baseline gap-3">
           <div className="flex gap-3 items-center">
             <div className="p-2 flex gap-10 items-center border px-3">
-              <button disabled={quantity === 1} onClick={()=>setQuantity(quantity - 1)} className="font-bold hover:bg-red-700 hover:text-white px-3 rounded-lg text-lg text-red-800">
+              <button
+                disabled={quantity === 1}
+                onClick={() => setQuantity(quantity - 1)}
+                className="font-bold hover:bg-red-700 hover:text-white px-3 rounded-lg text-lg text-red-800"
+              >
                 -
               </button>
               <h2>{quantity}</h2>
-              <button onClick={()=>setQuantity(quantity+1)} className="font-bold text-green-800 text-lg hover:bg-green-700 hover:text-white px-3 rounded-lg">
+              <button
+                onClick={() => setQuantity(quantity + 1)}
+                className="font-bold text-green-800 text-lg hover:bg-green-700 hover:text-white px-3 rounded-lg"
+              >
                 +
               </button>
             </div>
-            <h1 className="font-bold"> = ${(quantity*ptotalPrice).toFixed(2)}</h1>
+            <h1 className="font-bold">
+              {" "}
+              = ${(quantity * ptotalPrice).toFixed(2)}
+            </h1>
           </div>
 
-          <Button className="flex items-center gap-2">
+          <Button onClick={() => addToCart()} className="flex items-center gap-2">
             <ShoppingBasket />
             Add to Cart
           </Button>

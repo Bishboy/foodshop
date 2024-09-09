@@ -8,12 +8,13 @@ import React from 'react'
 import GlobalApi from '@/app/_utils/GlobalApi';
 import { useRouter } from 'next/navigation';
 import { toast } from "sonner";
+import { Loader2Icon } from 'lucide-react';
 
 const SignIn = () => {
    const [email, SetEmail] = useState("");
     const [password, SetPassword] = useState("");
     const router = useRouter();
-    const [loadind, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     useEffect(()=>{
       const jwt = sessionStorage.getItem('jwt');
@@ -56,11 +57,8 @@ const SignIn = () => {
             type="password"
             onChange={(e) => SetPassword(e.target.value)}
           />
-          <Button
-            disabled={!( email || password)}
-            onClick={() => onSignIn()}
-          >
-            Sign In
+          <Button disabled={!(email || password)} onClick={() => onSignIn()}>
+            {loading ? <Loader2Icon className='animate-spin' /> : "Sign In"}
           </Button>
           <p>
             Do not have an Account?{" "}

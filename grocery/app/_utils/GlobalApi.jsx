@@ -10,12 +10,20 @@ const axiosClient = axios.create({
  const login = (email, password) => axiosClient.post('/auth/local',{
   identifier: email, password:password
  })
-// const getCategory = () => axiosClient.get("/categories?populate=*");
+
+ const addToCart =(data, jwt) => axiosClient.post('/user-carts',data,{
+  headers:{
+    Authorization:'Bearer'+jwt
+  }
+ })
+const getCategory = () => axiosClient.get("/categories?populate=*");
 
 // const getSliders = () => axiosClient.get('/sliders?populate=*').then(resp=>{
 //   return resp.data.data
 // })
 export default {
   register,
-  login
+  login,
+  addToCart,
+  getCategory
 };

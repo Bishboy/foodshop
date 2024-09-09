@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-// import GlobalApi from "./_utils/GlobalApi";
+import GlobalApi from "./_utils/GlobalApi";
 
 function Header() {
   const [categoryList, setCategoryList] = useState([]);
@@ -50,22 +50,21 @@ function Header() {
   
  
 
-  // const getCategoryList= () => {
-  //   GlobalApi.getCategory().then(resp => {
-  //     console.log('categoy', resp.data.data);
+  const getCategoryList= () => {
+    GlobalApi.getCategory().then(resp => {
+      console.log('categoy', resp.data.data);
 
-  //     // setCategoryList(resp.data.data)
+      setCategoryList(resp.data.data)
 
-  //   })
-  // }
+    })
+  }
 
-  // useEffect(()=>{
-  //   getCategoryList()
+  useEffect(()=>{
+    getCategoryList()
 
-  // },[])
+  },[])
 
   return (
-
     <div
       className={` p-2  px-3 shadow-md  flex w-full bg-white z-50 justify-between ${
         isSticky
@@ -93,7 +92,7 @@ function Header() {
           <DropdownMenuContent>
             <DropdownMenuLabel>Browswe Category</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {foodList.map((category, index) => (
+            {categoryList.map((category, index) => (
               <Link
                 key={category.id}
                 href={`/productsCategory/${category.name}`}
@@ -102,7 +101,11 @@ function Header() {
                   <div className="flex items-center gap-2">
                     {
                       <Image
-                        src={category.photo}
+                        src={
+                          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}${category?.attributes?.icon?.data[0]?.attributes?.url}`
+
+                        }
+                        unoptimized={true}
                         alt="logo"
                         width={23}
                         height={23}
@@ -110,7 +113,7 @@ function Header() {
                       />
                     }
 
-                    <h2>{category.name}</h2>
+                    <h2>{category?.attributes?.name}</h2>
                   </div>
                 </DropdownMenuItem>
               </Link>
@@ -145,7 +148,9 @@ function Header() {
               <DropdownMenuSeparator />
               <DropdownMenuItem>Profile</DropdownMenuItem>
               <DropdownMenuItem>My Orders</DropdownMenuItem>
-              <DropdownMenuItem onClick={()=>onSignOut()}>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onSignOut()}>
+                Logout
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )}

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import GlobalApi from '@/app/_utils/GlobalApi';
 import { useRouter } from 'next/navigation';
 import { toast } from "sonner";
+import { Loader2Icon } from 'lucide-react';
 
 
 
@@ -14,6 +15,7 @@ const CreateAccount = () => {
     const [username, SetUserName]=useState('')
     const [email, SetEmail] = useState("");
     const [password, SetPassword] = useState("");
+    const [loading, setLoading] = useState(false)
 
     const router = useRouter()
 
@@ -21,20 +23,23 @@ const CreateAccount = () => {
         const jwt = sessionStorage.getItem("jwt");
         if (jwt) {
           router.push("/");
+          
         }
       }, []);
 
     const onCreateAccount = () => {
+      setLoading(true)
         GlobalApi.register(username,email,password).then(resp=>{
             console.log(resp.data.user); 
             console.log(resp.data.jwt);   
             sessionStorage.setItem('user',JSON.stringify(resp.data.user))
             sessionStorage.setItem('jwt',resp.data.jwt)
             toast("Account has been Successfully Created!");
-
             router.push('/')
+            setLoading(false)
         },(e) =>{
-          toast("Error while trying to create ann account.");
+          toast("Error while trying to create an account.");
+          setLoading(false)
 
         })
 
@@ -56,14 +61,20 @@ const CreateAccount = () => {
           <Input
             placeholder="name@example.com"
             onChange={(e) => SetEmail(e.target.value)}
-            type='email'
+            type="email"
           />
           <Input
             placeholder="password"
             type="password"
             onChange={(e) => SetPassword(e.target.value)}
           />
-          <Button disabled={!(username||email||password)} onClick={() => onCreateAccount()}>Create an Account</Button>
+          <Button
+            disabled={!(username || email || password)}
+            onClick={() => onCreateAccount()}
+          >
+            {" "}
+            {loading ? <Loader2Icon className='animate-spin' /> : "Create an Account"}{" "}
+          </Button>
           <p>
             Already have an Account?{" "}
             <Link className="text-blue-500" href={"/sign-in"}>
