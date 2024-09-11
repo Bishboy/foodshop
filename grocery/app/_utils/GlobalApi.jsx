@@ -1,3 +1,4 @@
+
 const { default: axios } = require("axios");
 
 const axiosClient = axios.create({
@@ -17,6 +18,17 @@ const axiosClient = axios.create({
   }
  })
 const getCategory = () => axiosClient.get("/categories?populate=*");
+ 
+const getCategoryList = () => axiosClient.get("/categories?populate=*").then(resp=>{
+  console.log(resp.data.data);
+  return resp.data.data
+  
+});
+ 
+
+ 
+ 
+
 
 // const getSliders = () => axiosClient.get('/sliders?populate=*').then(resp=>{
 //   return resp.data.data
@@ -25,5 +37,6 @@ export default {
   register,
   login,
   addToCart,
-  getCategory
+  getCategory,
+  getCategoryList
 };

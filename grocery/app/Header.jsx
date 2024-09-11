@@ -52,8 +52,6 @@ function Header() {
 
   const getCategoryList= () => {
     GlobalApi.getCategory().then(resp => {
-      console.log('categoy', resp.data.data);
-
       setCategoryList(resp.data.data)
 
     })
@@ -95,7 +93,7 @@ function Header() {
             {categoryList.map((category, index) => (
               <Link
                 key={category.id}
-                href={`/productsCategory/${category.name}`}
+                href={`/productsCategory/${category.attributes.name}`}
               >
                 <DropdownMenuItem>
                   <div className="flex items-center gap-2">
@@ -103,7 +101,6 @@ function Header() {
                       <Image
                         src={
                           `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}${category?.attributes?.icon?.data[0]?.attributes?.url}`
-
                         }
                         unoptimized={true}
                         alt="logo"
