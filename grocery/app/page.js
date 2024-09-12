@@ -8,15 +8,15 @@ import bannar from '../../grocery/assets/image/free.jpg'
 
 export default async function Home() {
    
-  const categoryList = await GlobalApi.getCategoryList()
- 
+  const categoryList = await GlobalApi.getCategoryList();
+  
+  const productList = await GlobalApi.getAllProduct()
    
   return (
     <div className="max-w-[1500px] mx-auto p-5  z-0 md:p-10 ">
       <Slider  /> 
       <CategoryList categoryList={categoryList} />
-      <ProductList /> 
-      
+      <ProductList productList={productList} /> 
       <Image src={bannar} width={2000} height={350} className="w-full object-contain mt-16 h-[510px]" />
     </div>
      );

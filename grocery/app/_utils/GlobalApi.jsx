@@ -24,7 +24,23 @@ const getCategoryList = () => axiosClient.get("/categories?populate=*").then(res
   return resp.data.data
   
 });
+
+const getProductsByCategory = (category) => axiosClient.get('/products?filters[categories][name][$in]='+category+'&populate=*')
+
+//  const getAllProduct = () => axiosClient.get("/products?populate=*").then((resp) => {
+//      return resp.data.data;
+//    });
  
+  const getAllProduct = async()=>{
+    try {
+      const response = await axiosClient.get("/products?populate=*");
+      return response.data.data
+    } catch (error) {
+      console.log("this is a bad error");
+      
+      
+    }
+  }
 
  
  
@@ -38,5 +54,7 @@ export default {
   login,
   addToCart,
   getCategory,
-  getCategoryList
+  getCategoryList,
+  getAllProduct,
+  getProductsByCategory
 };

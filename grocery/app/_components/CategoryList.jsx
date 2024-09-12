@@ -17,7 +17,7 @@ function CategoryList({categoryList}) {
         {categoryList.map((items, index) => (
           <Link
             href={`/productsCategory/${items.attributes.name}`}
-            key={items.id}
+            key={index}
             className="flex flex-col shadow items-center p-3 rounded-lg  bg-green-50 gap-2 group cursor-pointer hover:bg-green-200"
           >
             <Image

@@ -7,9 +7,7 @@ import {
   Search,
   ShoppingBag,
 } from "lucide-react";
-import { foodList } from "./_utils/data";
 import Image from "next/image";
-
 import React, { useEffect, useState } from "react";
 import {
   DropdownMenu,
@@ -26,11 +24,11 @@ import GlobalApi from "./_utils/GlobalApi";
 function Header() {
   const [categoryList, setCategoryList] = useState([]);
   const [isSticky , setIsticky] = useState(false)
-  const isLoggedin = sessionStorage.getItem('jwt')? true:false
+  // const isLoggedin = sessionStorage.getItem('jwt')? true:false
+  const isLoggedin = !!sessionStorage.getItem("jwt");
+
   const router = useRouter()
-  
-    const onSignOut = () => {
-      sessionStorage.clear();
+    const onSignOut = () => { sessionStorage.clear();
       router.push("/sign-in");
     };
 
@@ -48,25 +46,28 @@ function Header() {
     }
   })
   
- 
+  // const getCategoryList= () => {
+  //   GlobalApi.getCategory().then(resp => {
+  //     setCategoryList(resp.data.data)
+  //   })
+  // }
 
-  const getCategoryList= () => {
-    GlobalApi.getCategory().then(resp => {
-      setCategoryList(resp.data.data)
-
-    })
+  const getCategoryList = async() => {
+    try {
+      const response = await GlobalApi.getCategory()
+      setCategoryList(response.data.data)
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+    }
   }
 
   useEffect(()=>{
     getCategoryList()
-
   },[])
 
   return (
     <div
-      className={` p-2  px-3 shadow-md  flex w-full bg-white z-50 justify-between ${
-        isSticky
-          ? "sticky top-0 left-0 right-0 border  bg-green-100 duration-300"
+      className={` p-2 px-3 shadow-md   flex w-full bg-white z-50 justify-between ${ isSticky ? "sticky top-0 left-0 right-0 border bg-green-100 duration-300"
           : ""
       }`}
     >
@@ -83,7 +84,7 @@ function Header() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <h2 className="md:flex hidden   items-center gap-2 border rounded-full p-2 px-10 bg-slate-200 cursor-pointer">
+            <h2 className="md:flex hidden items-center gap-2 border rounded-full p-2 px-10 bg-slate-200 cursor-pointer">
               <LayoutGrid className="h-5 w-5" /> Category
             </h2>
           </DropdownMenuTrigger>
@@ -92,7 +93,7 @@ function Header() {
             <DropdownMenuSeparator />
             {categoryList.map((category, index) => (
               <Link
-                key={category.id}
+                key={index}
                 href={`/productsCategory/${category.attributes.name}`}
               >
                 <DropdownMenuItem>
@@ -138,7 +139,7 @@ function Header() {
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <CircleUserRound className="w-12 h-12 bg-green-100 text-primary  rounded-full p-2 cursor-pointer " />
+              <CircleUserRound className="w-11 h-11 bg-green-100 text-primary  rounded-full p-2 cursor-pointer " />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>

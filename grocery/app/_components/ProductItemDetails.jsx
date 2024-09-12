@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 function ProductItemDetails({ items }) {
   const [ptotalPrice, setptotalPrice] = useState(
-    items.selling ? items.selling : items.cost
+    items.attributes.sellingPrice ? items.attributes.sellingPrice : items.attributes.price
   );
   const [quantity, setQuantity] = useState(1);
   const jwt = sessionStorage.getItem('jwt')
@@ -49,30 +49,33 @@ function ProductItemDetails({ items }) {
       className="grid grid-cols-1 md:grid-cols-2 md:p-7  p-5 bg-white "
     >
       <Image
-        src={items.image}
+        src={
+          process.env.NEXT_PUBLIC_BACKEND_BASE_URL +
+          items.attributes.image.data[0].attributes.url
+        }
         alt="images"
         width={300}
         height={300}
         className="bg-slate-200 md:p-5 p-3 md:h-[320px] w-[150px] mx-auto  md:w-[300px] object-contain rounded-lg shadow-md"
       />
       <div className="flex flex-col gap-3">
-        <h1 className="text-xl font-bold">{items.name}</h1>
+        <h1 className="text-xl font-bold">{items.attributes.name}</h1>
         <p className="text-sm font-semibold text-gray-500">
-          {items.description}
+          {items.attributes.description}
         </p>
         <div className="flex items-center  gap-3">
-          {items.selling && (
-            <h2 className="font-bold text-3xl">${items.selling}</h2>
+          {items.attributes.sellingPrice && (
+            <h2 className="font-bold text-3xl">${items.attributes.sellingPrice}</h2>
           )}
           <h2
             className={`font-bold ${
-              items.selling && "line-through text-3xl text-gray-400"
+              items.attributes.sellingPrice && "line-through text-3xl text-gray-400"
             }`}
           >
-            ${items.cost}
+            ${items.attributes.price}
           </h2>
         </div>
-        <h2 className="font-semibold text-lg">Quantity( {items.quantity} )</h2>
+        <h2 className="font-semibold text-lg">Quantity( {items.attributes.quantity} )</h2>
         <div className="flex flex-col items-baseline gap-3">
           <div className="flex gap-3 items-center">
             <div className="p-2 flex gap-10 items-center border px-3">
@@ -97,14 +100,17 @@ function ProductItemDetails({ items }) {
             </h1>
           </div>
 
-          <Button onClick={() => addToCart()} className="flex items-center gap-2">
+          <Button
+            onClick={() => addToCart()}
+            className="flex items-center gap-2"
+          >
             <ShoppingBasket />
             Add to Cart
           </Button>
         </div>
         <h2>
           <span className="font-bold text-green-700">Category:</span>{" "}
-          {items.category}
+          {items.attributes.categories.data[0].attributes.name}
         </h2>
       </div>
     </div>
