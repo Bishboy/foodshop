@@ -25,23 +25,15 @@ const getCategoryList = () => axiosClient.get("/categories?populate=*").then(res
   
 });
 
-const getProductsByCategory = (category) => axiosClient.get('/products?filters[categories][name][$in]='+category+'&populate=*')
+const getProductsByCategory = (category) => axiosClient.get('/products?filters[categories][name][$in]='+category+'&populate=*').then(resp=>{
+  return resp.data.data
+})
 
-//  const getAllProduct = () => axiosClient.get("/products?populate=*").then((resp) => {
-//      return resp.data.data;
-//    });
+ const getAllProduct = () => axiosClient.get("/products?populate=*").then((resp) => {
+     return resp.data.data.slice(0,8);
+   });
  
-  const getAllProduct = async()=>{
-    try {
-      const response = await axiosClient.get("/products?populate=*");
-      return response.data.data
-    } catch (error) {
-      console.log("this is a bad error");
-      
-      
-    }
-  }
-
+  
  
  
 
