@@ -14,9 +14,10 @@ const axiosClient = axios.create({
 
  const addToCart =(data, jwt) => axiosClient.post('/user-carts',data,{
   headers:{
-    Authorization:'Bearer'+jwt
+    Authorization: `Bearer ${jwt}`
   }
  })
+
 const getCategory = () => axiosClient.get("/categories?populate=*");
  
 const getCategoryList = () => axiosClient.get("/categories?populate=*").then(resp=>{

@@ -724,6 +724,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    user_cart: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToOne',
+      'api::user-cart.user-cart'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -849,6 +854,11 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'manyToMany',
       'api::category.category'
     >;
+    user_carts: Attribute.Relation<
+      'api::product.product',
+      'oneToMany',
+      'api::user-cart.user-cart'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -906,6 +916,7 @@ export interface ApiUserCartUserCart extends Schema.CollectionType {
     singularName: 'user-cart';
     pluralName: 'user-carts';
     displayName: 'User Cart';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -918,11 +929,12 @@ export interface ApiUserCartUserCart extends Schema.CollectionType {
       'oneToOne',
       'plugin::users-permissions.user'
     >;
-    admin_user: Attribute.Relation<
+    product: Attribute.Relation<
       'api::user-cart.user-cart',
-      'oneToOne',
-      'admin::user'
+      'manyToOne',
+      'api::product.product'
     >;
+    userId: Attribute.Integer;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

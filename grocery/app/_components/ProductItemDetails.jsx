@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ShoppingBasket } from "lucide-react";
+import { LoaderCircle, LoaderIcon, ShoppingBasket } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -15,10 +15,13 @@ function ProductItemDetails({ items }) {
   const jwt = sessionStorage.getItem('jwt')
   const user = JSON.parse(sessionStorage.getItem('user'))
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
 
   const addToCart = () => {
+    setLoading(true)
     if(!jwt){
       router.push('/sign-in')
+      setLoading(false)
       return;
     }
 
@@ -27,7 +30,8 @@ function ProductItemDetails({ items }) {
         quantity: quantity,
         amount: (quantity * ptotalPrice).toFixed(2),
         product: items.id,
-        users_permissions_user:user.id
+        users_permissions_user:user.id,
+        userId:user.id
 
       }
     };
@@ -36,10 +40,12 @@ function ProductItemDetails({ items }) {
 
     GlobalApi.addToCart(data,jwt).then(resp=>{
       console.log(resp);
-      toast('added to cart')
+      toast('Added to Cart')
+      setLoading(false)
       
     },(e)=>{
       toast('error while adding to cart')
+      setLoading(false)
     })
   }
 
@@ -65,17 +71,22 @@ function ProductItemDetails({ items }) {
         </p>
         <div className="flex items-center  gap-3">
           {items.attributes.sellingPrice && (
-            <h2 className="font-bold text-3xl">${items.attributes.sellingPrice}</h2>
+            <h2 className="font-bold text-3xl">
+              ${items.attributes.sellingPrice}
+            </h2>
           )}
           <h2
             className={`font-bold ${
-              items.attributes.sellingPrice && "line-through text-3xl text-gray-400"
+              items.attributes.sellingPrice &&
+              "line-through text-3xl text-gray-400"
             }`}
           >
             ${items.attributes.price}
           </h2>
         </div>
-        <h2 className="font-semibold text-lg">Quantity( {items.attributes.quantity} )</h2>
+        <h2 className="font-semibold text-lg">
+          Quantity( {items.attributes.quantity} )
+        </h2>
         <div className="flex flex-col items-baseline gap-3">
           <div className="flex gap-3 items-center">
             <div className="p-2 flex gap-10 items-center border px-3">
@@ -103,9 +114,10 @@ function ProductItemDetails({ items }) {
           <Button
             onClick={() => addToCart()}
             className="flex items-center gap-2"
+            disabled={loading}
           >
             <ShoppingBasket />
-            Add to Cart
+            {loading ? <LoaderCircle className="animate-spin" /> : "Add to Cart"}
           </Button>
         </div>
         <h2>

@@ -6,6 +6,7 @@ import {
   LayoutGrid,
   Search,
   ShoppingBag,
+  ShoppingBasket,
 } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -26,6 +27,7 @@ function Header() {
   const [isSticky , setIsticky] = useState(false)
   // const isLoggedin = sessionStorage.getItem('jwt')? true:false
   const isLoggedin = !!sessionStorage.getItem("jwt");
+  const [totalCartItem,  setTotalCartItem] =useState(0)
 
   const router = useRouter()
     const onSignOut = () => { sessionStorage.clear();
@@ -67,7 +69,9 @@ function Header() {
 
   return (
     <div
-      className={` p-2 px-3 shadow-md   flex w-full bg-white z-50 justify-between ${ isSticky ? "sticky top-0 left-0 right-0 border bg-green-100 duration-300"
+      className={` p-2 px-3 shadow-md   flex w-full bg-white z-50 justify-between ${
+        isSticky
+          ? "sticky top-0 left-0 right-0 border bg-green-100 duration-300"
           : ""
       }`}
     >
@@ -100,9 +104,7 @@ function Header() {
                   <div className="flex items-center gap-2">
                     {
                       <Image
-                        src={
-                          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}${category?.attributes?.icon?.data[0]?.attributes?.url}`
-                        }
+                        src={`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}${category?.attributes?.icon?.data[0]?.attributes?.url}`}
                         unoptimized={true}
                         alt="logo"
                         width={23}
@@ -130,7 +132,10 @@ function Header() {
       </div>
       <div className="flex gap-5 items-center">
         <h2 className="flex gap-2 items-center text-lg">
-          <ShoppingBag /> 0
+          <ShoppingBasket className="h-7 w-7" />{" "}
+          <span className="bg-primary text-white  px-2 rounded-full">
+            {totalCartItem}
+          </span>
         </h2>
         {!isLoggedin ? (
           <Link href="/sign-in">

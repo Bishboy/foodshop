@@ -4,7 +4,8 @@
   "info": {
     "singularName": "user-cart",
     "pluralName": "user-carts",
-    "displayName": "User Cart"
+    "displayName": "User Cart",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -20,12 +21,17 @@
     "users_permissions_user": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "plugin::users-permissions.user"
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "user_cart"
     },
-    "admin_user": {
+    "product": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "admin::user"
+      "relation": "manyToOne",
+      "target": "api::product.product",
+      "inversedBy": "user_carts"
+    },
+    "userId": {
+      "type": "integer"
     }
   }
 }
