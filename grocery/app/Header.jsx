@@ -9,7 +9,7 @@ import {
   ShoppingBasket,
 } from "lucide-react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,13 +21,18 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import GlobalApi from "./_utils/GlobalApi";
+import { UpdateCartContext } from "./_context/UpdateCart";
 
 function Header() {
   const [categoryList, setCategoryList] = useState([]);
   const [isSticky , setIsticky] = useState(false)
   // const isLoggedin = sessionStorage.getItem('jwt')? true:false
   const isLoggedin = !!sessionStorage.getItem("jwt");
+  const user = JSON.parse(sessionStorage.getItem('user'))
+  const jwt = sessionStorage.getItem("jwt");
   const [totalCartItem,  setTotalCartItem] =useState(0)
+  const { updateCart, setUpdateCart } = useContext(UpdateCartContext);
+  const [cartItemList, setCartItemList] = useState([])
 
   const router = useRouter()
     const onSignOut = () => { sessionStorage.clear();
@@ -48,11 +53,13 @@ function Header() {
     }
   })
   
-  // const getCategoryList= () => {
-  //   GlobalApi.getCategory().then(resp => {
-  //     setCategoryList(resp.data.data)
-  //   })
-  // }
+   const getCartItem = async() => {
+    const cartListItems_ = await GlobalApi.getCartItems(user.id, jwt )
+    console.log(cartListItems_);
+    setTotalCartItem(cartListItems_?.length);
+    setCartItemList(cartItemList);
+    
+   }
 
   const getCategoryList = async() => {
     try {
@@ -66,6 +73,10 @@ function Header() {
   useEffect(()=>{
     getCategoryList()
   },[])
+
+  useEffect(()=>{
+    getCartItem()
+  },[updateCart])
 
   return (
     <div
