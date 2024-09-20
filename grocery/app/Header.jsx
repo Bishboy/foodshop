@@ -18,10 +18,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import GlobalApi from "./_utils/GlobalApi";
 import { UpdateCartContext } from "./_context/UpdateCart";
+import CartItemsList from "./_components/CartItemsList";
+import { toast } from "sonner";
 
 function Header() {
   const [categoryList, setCategoryList] = useState([]);
@@ -33,6 +45,7 @@ function Header() {
   const [totalCartItem,  setTotalCartItem] =useState(0)
   const { updateCart, setUpdateCart } = useContext(UpdateCartContext);
   const [cartItemList, setCartItemList] = useState([])
+  const [sumTotal, setSumTotal] = useState(0);
 
   const router = useRouter()
     const onSignOut = () => { sessionStorage.clear();
@@ -54,10 +67,14 @@ function Header() {
   })
   
    const getCartItem = async() => {
-    const cartListItems_ = await GlobalApi.getCartItems(user.id, jwt )
-    console.log(cartListItems_);
-    setTotalCartItem(cartListItems_?.length);
-    setCartItemList(cartItemList);
+    if (user && user.id) {
+      const cartListItems_ = await GlobalApi.getCartItems(user.id, jwt);
+      console.log(cartListItems_);
+      setTotalCartItem(cartListItems_?.length);
+      setCartItemList(cartListItems_);
+    } else {
+      console.error("User is not logged in or user object is null");
+    }
     
    }
 
@@ -77,6 +94,22 @@ function Header() {
   useEffect(()=>{
     getCartItem()
   },[updateCart])
+
+   const onDeleteItem = (id) => {
+      GlobalApi.deleteCartItems(id,jwt).then(resp=> {
+        toast('Item removed!')
+        getCartItem();
+      })
+   }
+   
+
+    useEffect(() => {
+      let total = 0;
+      cartItemList.forEach((element) => {
+        total = total + element.amount;
+      });
+      setSumTotal(total.toFixed(2));
+    }, [cartItemList]);
 
   return (
     <div
@@ -142,15 +175,41 @@ function Header() {
         </div>
       </div>
       <div className="flex gap-5 items-center">
-        <h2 className="flex gap-2 items-center text-lg">
-          <ShoppingBasket className="h-7 w-7" />{" "}
-          <span className="bg-primary text-white  px-2 rounded-full">
-            {totalCartItem}
-          </span>
-        </h2>
+        <Sheet>
+          <SheetTrigger>
+            <h2 className="flex gap-2 items-center text-lg">
+              <ShoppingBasket className="h-7 w-7" />{" "}
+              <span className="bg-primary text-white  px-2 rounded-full">
+                {totalCartItem}
+              </span>
+            </h2>
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle className="bg-primary mt-4 text-white font-bold text-lg p-4 text-center ">
+                My Cart
+              </SheetTitle>
+              <SheetDescription>
+                <CartItemsList
+                  cartItemList={cartItemList}
+                  onDeleteItem={onDeleteItem}
+                />
+              </SheetDescription>
+            </SheetHeader>
+            <SheetClose asChild>
+              <div className="absolute w-[90%] bottom-6 flex flex-col">
+                <h2 className="text-lg font-bold flex justify-between">
+                  SumTotal <span>{sumTotal}</span>
+                </h2>
+                <Button onClick={()=> router.push(jwt? '/checkout': "/sign-in")}>Checkout</Button>
+              </div>
+            </SheetClose>
+          </SheetContent>
+        </Sheet>
+
         {!isLoggedin ? (
           <Link href="/sign-in">
-            <Button>Login</Button>
+            <Button >Login</Button>
           </Link>
         ) : (
           <DropdownMenu>
