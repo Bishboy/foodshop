@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import Header from "./Header";
@@ -7,8 +7,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { usePathname } from "next/navigation";
 import { UpdateCartContext } from "./_context/UpdateCart";
 import { useState } from "react";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
-const outfit = Outfit({ subsets: ["latin"]  });
+const outfit = Outfit({ subsets: ["latin"] });
 
 // export const metadata = {
 //   title: "Create Next App",
@@ -16,19 +17,23 @@ const outfit = Outfit({ subsets: ["latin"]  });
 // };
 
 export default function RootLayout({ children }) {
-  const params = usePathname()
-  const showHeader = params==='/sign-in'|| params === '/create-account'? false:true
-  const [updateCart, setUpdateCart] = useState(false)
+  const params = usePathname();
+  const showHeader =
+    params === "/sign-in" || params === "/create-account" ? false : true;
+  const [updateCart, setUpdateCart] = useState(false);
   return (
     <html lang="en">
       <body className={outfit.className}>
-        <UpdateCartContext.Provider value={{ updateCart, setUpdateCart }}>
-          {showHeader && <Header />}
-          <Toaster />
-          {children}
-          <Footer />
-        </UpdateCartContext.Provider>
+        <PayPalScriptProvider options={{ clientId: "test" }}>
+          <UpdateCartContext.Provider value={{ updateCart, setUpdateCart }}>
+            {showHeader && <Header />}
+            <Toaster />
+            {children}
+            <Footer />
+          </UpdateCartContext.Provider>
+        </PayPalScriptProvider>
       </body>
     </html>
+    
   );
 }
