@@ -24,6 +24,7 @@ const CheckOut = () => {
   const [email, Setemail] = useState('');
   const [phone, setPhone] =useState(0)
   const router = useRouter();
+  const [totalAmount, setTotalAmount] = useState()
 
   const handleChange = (e) => {
     const {name,value} = e.target;
@@ -55,12 +56,18 @@ const CheckOut = () => {
     cartItemList.forEach((element) => {
       total = total + element.amount;
     });
+      setTotalAmount((total * 0.9 + 15).toFixed(2));
     setSumTotal(total.toFixed(2));
   }, [cartItemList]);
 
   const caculateTotalAmount = () =>{
     const totalAmount = sumTotal * 0.9 + 15;
     return totalAmount.toFixed(2)
+  }
+
+  const onApprove = (data) => {
+    console.log(data);
+    
   }
 
   return (
@@ -133,10 +140,24 @@ const CheckOut = () => {
             <h2 className="font-bold flex justify-between items-center">
               Total : <span>{caculateTotalAmount()}</span>
             </h2>
-            {/* <Button>
-              Payment <ArrowBigRight />{" "}
-            </Button> */}
-            <PayPalButtons style={{ layout: "horizontal" }} />
+            {
+                <PayPalButtons
+                style={{ layout: "horizontal" }}
+                onApprove={onApprove}
+                createOrder={(data, action) => {
+                  return action.order.create({
+                    purchase_units: [
+                      {
+                        amount: {
+                          value: totalAmount,
+                          currency_code: "USD",
+                        },
+                      },
+                    ],
+                  });
+                }}
+              />
+            }
           </div>
         </div>
       </div>

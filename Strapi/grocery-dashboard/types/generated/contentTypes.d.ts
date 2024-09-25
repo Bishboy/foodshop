@@ -830,6 +830,37 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
   };
 }
 
+export interface ApiOderOder extends Schema.CollectionType {
+  collectionName: 'oders';
+  info: {
+    singularName: 'oder';
+    pluralName: 'oders';
+    displayName: 'Order';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    username: Attribute.String;
+    email: Attribute.Email;
+    phone: Attribute.Integer;
+    zip: Attribute.String;
+    address: Attribute.Text;
+    totalOrderAmount: Attribute.Decimal;
+    userId: Attribute.Integer;
+    paymentId: Attribute.String;
+    orderItemList: Attribute.Component<'ordereditem.ordered-item', true>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::oder.oder', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::oder.oder', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
 export interface ApiProductProduct extends Schema.CollectionType {
   collectionName: 'products';
   info: {
@@ -972,6 +1003,7 @@ declare module '@strapi/types' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'plugin::i18n.locale': PluginI18NLocale;
       'api::category.category': ApiCategoryCategory;
+      'api::oder.oder': ApiOderOder;
       'api::product.product': ApiProductProduct;
       'api::slider.slider': ApiSliderSlider;
       'api::user-cart.user-cart': ApiUserCartUserCart;

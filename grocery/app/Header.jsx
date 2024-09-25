@@ -201,7 +201,11 @@ function Header() {
                 <h2 className="text-lg font-bold flex justify-between">
                   SumTotal <span>{sumTotal}</span>
                 </h2>
-                <Button onClick={()=> router.push(jwt? '/checkout': "/sign-in")}>Checkout</Button>
+                <Button
+                  onClick={() => router.push(jwt ? "/checkout" : "/sign-in")}
+                >
+                  Checkout
+                </Button>
               </div>
             </SheetClose>
           </SheetContent>
@@ -209,7 +213,7 @@ function Header() {
 
         {!isLoggedin ? (
           <Link href="/sign-in">
-            <Button >Login</Button>
+            <Button>Login</Button>
           </Link>
         ) : (
           <DropdownMenu>
@@ -220,7 +224,9 @@ function Header() {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>My Orders</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href='/checkout'>My Orders</Link>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onSignOut()}>
                 Logout
               </DropdownMenuItem>

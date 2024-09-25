@@ -17,7 +17,6 @@ const login = (email, password) =>
     password: password,
   });
 
-  //hello jesus loves you
 
 const  addToCart = (data, jwt) =>
   axiosClient.post("/user-carts", data, {

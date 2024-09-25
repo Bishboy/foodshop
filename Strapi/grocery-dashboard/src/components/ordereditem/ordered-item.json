@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_ordereditem_ordered_items",
+  "info": {
+    "displayName": "Ordered-item",
+    "icon": "calendar"
+  },
+  "options": {},
+  "attributes": {
+    "quantity": {
+      "type": "integer"
+    },
+    "price": {
+      "type": "integer"
+    },
+    "product": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product"
+    }
+  }
+}

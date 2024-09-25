@@ -14,7 +14,7 @@ function ProductItemDetails({ items }) {
   );
   const [quantity, setQuantity] = useState(1);
   const jwt = sessionStorage.getItem('jwt')
-  const user = JSON.parse(sessionStorage.getItem('user'))
+  const user = JSON.parse(sessionStorage.getItem('user')) 
   const {updateCart, setUpdateCart } = useContext(UpdateCartContext)
   const router = useRouter()
   const [loading, setLoading] = useState(false)
